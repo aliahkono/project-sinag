@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../app/routes.dart';
-import '../theme/sinag_theme.dart';
-import '../widgets/sinag_widgets.dart';
-import 'role_navs.dart';
+import '../../app/roles.dart';
+import '../../app/routes.dart';
+import '../../theme/sinag_theme.dart';
+import '../../widgets/sinag_widgets.dart';
 
-/// 07 · Review bill (97:174)
+/// 07 · Review bill — Figma frame 97:174
+///
+/// Focal person checks the fields read from the bill (highlighted ones are
+/// low-confidence) and confirms them. Warns when the bill and the meter differ
+/// by more than 3%.
 class ReviewBillScreen extends StatelessWidget {
   const ReviewBillScreen({super.key});
 
@@ -16,11 +20,22 @@ class ReviewBillScreen extends StatelessWidget {
     return SinagPage(
       eyebrow: 'FOCAL PERSON · CONFIRM',
       title: 'Review bill',
-      bottomBar: RoleNav(items: focalNav, selected: 0),
+      role: SinagRole.focalPerson,
+      bottomBar: const RoleNav(items: focalNav),
+      about: const [
+        'SINAG read these numbers from your bill photo (OCR). Amber fields '
+            'are ones it is less sure about.',
+        'How sure it is: account number 99%, billing period 72%, '
+            'consumption 98%, amount 79%. Lower confidence doesn’t mean '
+            'wrong; just check it against the bill.',
+        'If the bill and the meter differ by more than 3%, the bill is '
+            'still saved, but the month stays incomplete until the EEC '
+            'Officer reviews it.',
+      ],
       children: [
-        const Tag('UPLOADED · OCR COMPLETE'),
+        const Tag('UPLOADED · READ FROM PHOTO'),
         const BodyText(
-          'Compare the bill with the extracted fields. Tap any highlighted field to correct it.',
+          'Check the 2 amber fields against the bill. Tap a field to fix it.',
         ),
         const Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,37 +47,25 @@ class ReviewBillScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SinagField(
-                    label: 'Account number · 99%',
+                    label: 'Account number',
                     initialValue: '123-45678-90',
                   ),
                   SizedBox(height: 10),
                   SinagField(
-                    label: 'Billing period · 72%',
+                    label: 'Billing period · check',
                     initialValue: '01–31 Oct 2026',
                     highlight: true,
                   ),
                   SizedBox(height: 10),
-                  SinagField(
-                    label: 'Consumption · 98%',
-                    initialValue: '14,250 kWh',
-                  ),
+                  SinagField(label: 'Consumption', initialValue: '14,250 kWh'),
                   SizedBox(height: 10),
                   SinagField(
-                    label: 'Amount · 79%',
+                    label: 'Amount · check',
                     initialValue: '₱110,571.50',
                     highlight: true,
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-        const Panel(
-          tone: PanelTone.warning,
-          children: [
-            PanelTitle('Check 2 highlighted fields'),
-            PanelText(
-              'Lower confidence does not mean incorrect. Confirm against the image.',
             ),
           ],
         ),
@@ -76,16 +79,24 @@ class ReviewBillScreen extends StatelessWidget {
           tone: PanelTone.danger,
           children: [
             const PanelTitle('Bill and meter differ by 3.8%'),
-            const PanelText(
-              'Measured bill: 14,250 kWh\nMeasured main meter: 13,728 kWh\nComputed difference: 522 kWh / 3.8%',
-            ),
-            const Note(
-              'Over the 3% limit. Confirmation saves the bill, but October stays incomplete until the review queue is cleared.',
-              color: SinagColors.dangerText,
-            ),
+            const PanelText('The bill shows 522 kWh more than the meter.'),
             SecondaryButton(
               'Open data review queue',
               onPressed: () => nav.pushNamed(Routes.dataReview),
+            ),
+            const MoreDetails(
+              children: [
+                PanelText(
+                  'Measured bill: 14,250 kWh\nMeasured main meter: 13,728 '
+                  'kWh\nComputed difference: 522 kWh / 3.8%',
+                ),
+                Note(
+                  'Over the 3% limit. Confirmation saves the bill, but '
+                  'October stays incomplete until the review queue is '
+                  'cleared.',
+                  color: SinagColors.dangerText,
+                ),
+              ],
             ),
           ],
         ),

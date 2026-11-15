@@ -1,11 +1,11 @@
 {
-    "name": "project_sinag",
-    "short_name": "project_sinag",
+    "name": "SINAG",
+    "short_name": "SINAG",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#F3F4F5",
+    "theme_color": "#E3EEFA",
+    "description": "SINAG - Systematic Information Network for Auditing Government-energy",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
